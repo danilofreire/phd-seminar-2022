@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Tell Me Why: A Casual Intoduction to Causal Inference   </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Danilo Freire  " />
+    <script src="causality_files/header-attrs/header-attrs.js"></script>
+    <link href="causality_files/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: middle, left, title-slide
+
+# Tell Me Why: A Casual Intoduction to Causal Inference<br><br><br>
+### Danilo Freire<br><br>
+### <font size="5">27<sup>th</sup> April 2022</font><br><br><br> <i class="fas  fa-link "></i> <a href="http://danilofreire.github.io" target="_blank"><font size="4" color="white">danilofreire.github.io</font></a><br> <i class="fas  fa-envelope "></i> <a href="mailto:dfreire@lincoln.ac.uk" target="_blank"><font size="4" color="white">dfreire@lincoln.ac.uk</font></a></br> <i class="fab  fa-github "></i> <a href="http://github.com/danilofreire/phd-seminar-2022" target="_blank"><font size="4" color="white">github.com/danilofreire/phd-seminar-2022</font></a>
+
+---
+
+
+
+
+# Outline
+
+* Counterfactual approach to causal inference
+
+* Correlations, counterfactuals, and potential outcomes
+
+* Experiments: the gold standard of causal inference
+
+* How to untangle cause and effect in observational studies
+  - Control variables
+  - Regression discontinuity design
+  - Synthetic control
+
+* Questions
+
+---
+
+class: center, middle, inverse
+
+# Counterfactual approach to causal inference
+
+---
+
+# Recent changes in social science research
+
+* Quantitative social sciences have experienced a "credibility revolution" ([Angrist and Pischke, 2010](https://www.aeaweb.org/articles?id=10.1257/jep.24.2.3))
+
+* Problems of reverse causality and spurious correlations have long plagued quantitative studies
+  - Economic growth or state capacity: what comes first?
+  - Does cold air make you smarter?
+
+* Development of _new methods_ to tackle these problems
+
+* Great paradigm shift in social science research:
+  - Being more precise about what we mean by causal effects
+  - Widespread use of experimental and quasi-experimental designs
+  - More partnerships between researchers and practitioners
+
+---
+
+# Examples
+
+.center[![:scale 70%](pnas.png)]
+
+---
+
+# Examples
+
+.center[![:scale 65%](microcredit.png)]
+
+---
+
+# Examples
+
+.center[![:scale 90%](justice.png)]
+
+---
+
+# Two Nobel Prizes for the credibility revolution
+
+.pull-left[![:scale 100%](nobel1.png)]
+
+.pull-right[![:scale 100%](nobel2.png)]
+
+---
+
+class: center, middle, inverse
+
+
+# Correlations, counterfactuals, and potential outcomes
+
+---
+
+# Correlation is not causation 
+
+.center[![:scale 90%](cheese.png)]
+
+---
+
+# What does "cause" mean?
+
+* Causal relationships have the following characteristics:
+
+  - *Persistent association*: "We always/mostly see `\(Y = 1\)` when `\(X = 1\)` and `\(Y = 0\)` when `\(X = 0\)`"
+
+  - *Counterfactual difference*: "If `\(X\)` had not been `\(1\)`, then `\(Y\)` would not have been `\(1\)`"
+
+  - *Difference after manipulation*: "When we change `\(X\)` from `\(0\)` to `\(1\)`, then `\(Y\)` changes from `\(0\)` to `\(1\)`
+(establishes causal priority of `\(X\)` over `\(Y\)`)"
+
+  - **No causation without variation**
+
+* " `\(X\)` causes `\(Y\)`" need not imply that `\(W\)` and `\(V\)` do not cause `\(Y\)`: `\(X\)` is a part of the story, not the whole story. (The whole story is not necessary in order to learn about whether `\(X\)` causes `\(Y\)`)
+
+* " `\(X\)` causes `\(Y\)`" can mean "With `\(X\)`, the probability of `\(Y\)` is higher than would be without `\(X\)`" or "Without `\(X\)` there is no `\(Y\)`"
+
+---
+
+# Potential outcomes
+
+* For each unit we assume that there are two **post-treatment** outcomes: `\(Y_i(1)\)` and `\(Y_i(0)\)`
+
+* `\(Y_i(1)\)` is what we **would** obtain *if* the unit received the treatment ( `\(T_i=1\)` )
+
+* `\(Y_i(0)\)` is what we **would** obtain *if* the unit received the treatment ( `\(T_i=0\)` )
+
+* The **causal effect** of treatment (relative to control) is:
+
+&lt;center&gt; `\(\tau_i = Y_i(1) - Y_i(0)\)` &lt;/center&gt;
+
+* Note that we've moved to using `\(T\)` to indicate our treatment (what we want to learn the effect of). `\(X\)` will be used for background variables
+
+---
+
+# Average causal effect
+
+1. You have to define the control condition to define a causal effect
+    - Say `\(T=1\)` means a community meeting to discuss public health. Is `\(T=0\)` no meeting at all?  Is `\(T=0\)` a community meeting on a different subject?  Is `\(T=0\)` a flyer on public health?
+
+2. Each individual unit `\(i\)` has its own causal effect `\(\tau_i\)`
+
+3. But we can't measure the individual-level causal effect, because we can't observe both `\(Y_i(1)\)` and `\(Y_i(0)\)` at the same time. This is known as the **fundamental problem of causal inference**
+
+* While we can't measure the individual causal effect, `\(\tau_i = Y_i(1)-Y_i(0)\)`, we can randomly assign subjects to treatment and control conditions to estimate the **average causal effect**, `\(\bar{\tau}_i\)`:
+
+&lt;center&gt; `\(\overline{\tau_i} = \frac{1}{N} \sum_{i=1}^N ( Y_i(1)-Y_i(0) ) = \overline{Y_i(1)-Y_i(0)}\)` &lt;/center&gt;
+
+* The average causal effect is also known as the **average treatment effect** (ATE)
+ 
+---
+
+# Omitted variables and selection bias
+
+* Units must be comparable on average for us to estimate average causal effects
+
+* Comparing units that are systematically different in some way (e.g., age, gender, etc) gives us _biased estimates_ for the average causal effect
+  - Effect of conditional cash transfers in Norway and South Africa
+  - Effect of community policing in London and in Rio de Janeiro
+
+* Unknown factors that make units incomparable are called **omitted variables**, and the issue these variables introduce is called **selection bias**
+
+* Therefore, to properly evaluate average causal effects, _we need to eliminate selection bias_
+
+* Series of new, causal methods that try to reduce selection bias:
+  - Randomised controlled trials (experiments)
+  - Observational studies: control variables, regression discontinuity design, synthetic control
+
+---
+
+class: center, middle, inverse
+
+# Randomised controlled trials: the gold standard of causal inference
+
+---
+
+# Why experiments?
+
+* In RCTs, treatment is assigned _randomly_ to subjects
+
+* As the treatment is given by the researcher, _we know that there is no selection bias by design_
+
+* If we run the experiment in a random sample, we can estimate the ATE for the whole population
+
+* **Randomised controlled trials are the best way to ensure that the effect we see is only caused by the treatment**
+
+* Assumptions: the treatment is the only difference between the two groups, and no spillover from the treatment group
+
+---
+
+# Random sampling and random assignment
+
+* Random sample of households
+
+.center[![:scale 55%](casas.png)]
+
+---
+
+# Random sampling and random assignment
+
+* Random assignment of &lt;span style="color:blue"&gt;control&lt;/span&gt; and &lt;span style="color:red"&gt;treatment&lt;/span&gt; conditions
+
+.center[![:scale 55%](casas-tratadas.png)]
+
+---
+
+# Example: hot-spots policing in Minneapolis
+
+.center[![:scale 70%](minneapolis.png)]
+
+---
+
+# Treatment
+
+.center[![:scale 50%](assignment.png)]
+
+.center[![:scale 50%](dosage.png)]
+
+.center[![:scale 50%](outcomes.png)]
+
+---
+
+# Results
+
+.center[![:scale 60%](effect.png)]
+
+---
+
+class: center, middle, inverse
+
+# Observational studies: how to create comparable groups
+
+---
+
+# What to do when treatment has not been randomised?
+
+* Observational studies are more prone to selection bias
+
+* As the treatment had not been given by the researcher, it can only be *observed*, not *manipulated*
+
+* Therefore, we need to make statistical adjustments to ensure that units are comparable
+
+* Three methods
+  - Add control variables
+  - Use discontinuities and analyse cases close to the threshold
+  - Create a synthetic control group similar to the treatment group
+
+---
+
+# Regressions with control variables
+
+* Most common method of statistical adjustment
+
+* Researchers add _control variables_ to the model to reduce omitted variables bias
+
+* By adding a new variable `\(Z\)` to the regression, the model compares cases _holding that variable at its mean_
+
+* `\(Y = \alpha + \beta X + \gamma Z + \epsilon\)`
+
+* Issues: 
+  - We can only control for factors we know about, _not for those which we didn't measure_
+  - It is not always clear which factors must be included in the regression
+  - Adding "bad controls" make the models _worse and more biased_
+
+---
+
+# Example: Factors that affect criminality 
+
+.center[![:scale 100%](regression-paper.png)]
+
+---
+
+
+# Example: Factors that affect criminality
+
+.center[![:scale 100%](regression-table.png)]
+
+---
+
+# Regression discontinuity design
+
+* Another way to obtain comparable units is to find a discontinuity (e.g., law changes, test results, etc) and analyse cases that are very close to the threshold
+
+* Treatment is assigned to subjects _only on one side_ of the discontinuity
+
+* When applied correctly, RDDs are almost as good as RCTs: cases close to the threshold are assigned randomly
+
+* Assumptions:
+  - Units cannot choose which side of the discontinuity they are assigned to
+  - Only units that are close to the discontinuity can be compared: lower external validity
+
+---
+
+# Example: Effect of drunk driving on mortality rates
+
+.center[![:scale 40%](metrics.png)]
+
+---
+
+# Example: Effect of drunk driving on mortality rates
+
+.center[![:scale 60%](alcohol.png)]
+
+---
+
+# Synthetic control
+
+* In many case, it isn't feasible to run an experiment or find a discontinuity to estimate the causal effect we're interested in
+
+* One possible solution for time-series data is to create **a synthetic control group**
+
+* Again, the goal is to have a control unit that is as close as possible to the treatment unit
+
+* Synthetic control is a method that assigns weights to different units in _the control group pool_
+
+* Used to estimate average causal effects over time
+
+* Mathematically complex, but very intuitive
+
+---
+
+# Example: Effect of homicide policies on homicide rates
+
+.center[![:scale 100%](synth.png)]
+
+---
+
+# Example: Effect of homicide policies on homicide rates
+
+.center[![:scale 70%](homicides.png)]
+
+---
+
+# Example: Effect of homicide policies on homicide rates
+
+.center[![:scale 100%](table01.png)]
+
+---
+
+# Example: Effect of homicide policies on homicide rates
+
+.center[![:scale 100%](table02.png)]
+
+---
+
+# Example: Effect of homicide policies on homicide rates
+
+.center[![:scale 70%](sp.png)]
+
+---
+
+# Wrap-up
+
+* Quantitative social sciences have experienced a significant shift in the last few decades
+
+* Causal inference models make statistical evidence much stronger
+
+* Experiments are the gold standard for causal inference
+
+* Randomisation is the best tool we have to deal with omitted variable bias
+
+* When experiments are unfeasible or unethical to run, observational studies are our only option
+
+---
+
+# Wrap-up
+
+* Correlation is not causation
+
+* It's difficult to ensure that groups are comparable in observational studies
+
+* You may include additional variables in regression models
+
+* But ideally you should try to find a discontinuity in the data (laws, geography, population thresholds, etc)
+
+* Lastly, if you cannot find a comparable control group, you can create a synthetic one and estimate the treatment effect over time
+
+---
+
+# Recommended readings
+
+* Joshua Angrist and Stephen Pischke. [_Mastering 'Metrics: The Path from Cause to Effect_](https://www.masteringmetrics.com).
+  Princeton University Press, 2014.
+
+* Nancy Cartwright and Jeremy Hardie. [_Evidence-Based Policy: A Practical
+  Guide to Doing It
+  Better_](https://global.oup.com/academic/product/evidence-based-policy-9780199841622?cc=br&amp;lang=en&amp;).
+  Oxford University Press, 2012.
+
+* Scott Cunningham. [_Causal Inference: The Mixtape_](https://mixtape.scunning.com/). Yale Press, 2021.
+
+* Alan Gerber and Donald Green. [_Field Experiments: Design, Analysis, and
+  Interpretation_](https://wwnorton.com/books/9780393979954). Norton Books,
+  2012.
+
+* Miguel Hernán and James M. Robins. [_Causal Inference: What If?_](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/). Chapman &amp; Hall/CRC, 2020. 
+
+* Paul Holland. "[Statistics and Causal
+  Inference](https://www.jstor.org/stable/2289064)". _Journal of the American
+  Statistical Association_, 81:945–960, 1986.
+
+---
+
+# Recommended readings
+
+* Guido Imbens and Donald Rubin. [_Causal Inference in Statistics, Social, and
+  Biomedical Sciences_](https://doi.org/10.1017/CBO9781139025751). Cambridge
+  University Press, 2015.
+
+* Stephen Morgan and Christopher Winship. [_Counterfactuals and Causal Inference:
+  Methods and Principles for Social
+  Research_](https://www.cambridge.org/core/books/counterfactuals-and-causal-inference/5CC81E6DF63C5E5A8B88F79D45E1D1B7).
+  Cambridge University Press, 2014.
+
+* Judea Pearl. [_Causality: Models, Reasoning, and
+  Inference_](http://bayes.cs.ucla.edu/BOOK-2K/). Cambridge University Press,
+  2000.
+
+* Judea Pearl and Dana Mackenzie. [_The Book of Why: The New Science of Cause
+  and Effect_](http://bayes.cs.ucla.edu/WHY/). Basic Books, 2018.
+
+* Thomas Richardson and James Robins. "[Single World Intervention Graphs (swigs):
+  A Unification of the Counterfactual and Graphical Approaches to
+  Causality](https://csss.uw.edu/research/working-papers/single-world-intervention-graphs-swigs-unification-counterfactual-and)".
+  Center for the Statistics and the Social Sciences, University of Washington
+  Series. Working Paper, 128(30), 2013.
+
+---
+
+class: center, middle, inverse
+
+# Thanks very much! :)
+
+---
+
+# Contact information
+
+&lt;br&gt;
+
+* Danilo Freire:
+
+  - [dfreire@lincoln.ac.uk](mailto:dfreire@lincoln.ac.uk)
+  - &lt;http://danilofreire.github.io&gt;
+  - &lt;http://github.com/danilofreire/phd-seminar-2022&gt;
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"ratio": "16:10",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
