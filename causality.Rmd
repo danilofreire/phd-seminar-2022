@@ -44,7 +44,7 @@ style_mono_accent(
 * How to untangle cause and effect in observational studies
   - Control variables
   - Regression discontinuity design
-  - Synthetic control
+  - Synthetic control (if time allows)
 
 * Questions
 
